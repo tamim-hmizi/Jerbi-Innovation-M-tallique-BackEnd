@@ -52,14 +52,13 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    
-
     // Return the user info in the response
     res.status(201).json({
       token,
       user: {
         name: user.nom + " " + user.prenom,
         email: user.email,
+        id: user._id,
         role: user.role,
       },
     });

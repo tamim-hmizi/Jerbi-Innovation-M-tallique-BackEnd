@@ -1,4 +1,4 @@
-const Panier = require('../models/Panier');
+const Panier = require("../models/Panier");
 
 // Create a new panier
 exports.createPanier = async (req, res) => {
@@ -16,7 +16,7 @@ exports.createPanier = async (req, res) => {
 // Get all paniers
 exports.getAllPaniers = async (req, res) => {
   try {
-    const paniers = await Panier.find().populate('id_user').populate('list_produit');
+    const paniers = await Panier.find();
     res.status(200).json(paniers);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,8 +26,8 @@ exports.getAllPaniers = async (req, res) => {
 // Get panier by ID
 exports.getPanierById = async (req, res) => {
   try {
-    const panier = await Panier.findById(req.params.id).populate('id_user').populate('list_produit');
-    if (!panier) return res.status(404).json({ message: 'Panier not found' });
+    const paniers = await Panier.find();
+    const panier = paniers.find((pan) => pan.id_user == req.params.id);
     res.status(200).json(panier);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -37,8 +37,10 @@ exports.getPanierById = async (req, res) => {
 // Update panier
 exports.updatePanier = async (req, res) => {
   try {
-    const panier = await Panier.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!panier) return res.status(404).json({ message: 'Panier not found' });
+    const panier = await Panier.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!panier) return res.status(404).json({ message: "Panier not found" });
     res.status(200).json(panier);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -49,7 +51,7 @@ exports.updatePanier = async (req, res) => {
 exports.deletePanier = async (req, res) => {
   try {
     const panier = await Panier.findByIdAndDelete(req.params.id);
-    if (!panier) return res.status(404).json({ message: 'Panier not found' });
+    if (!panier) return res.status(404).json({ message: "Panier not found" });
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: error.message });

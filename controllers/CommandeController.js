@@ -16,23 +16,27 @@ exports.createCommande = async (req, res) => {
 // Get all commandes
 exports.getAllCommandes = async (req, res) => {
   try {
-    const commandes = await Commande.find().populate('id_user').populate('list_produit');
+    const commandes = await Commande.find();
     res.status(200).json(commandes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get commande by ID
+
 exports.getCommandeById = async (req, res) => {
   try {
-    const commande = await Commande.findById(req.params.id).populate('id_user').populate('list_produit');
-    if (!commande) return res.status(404).json({ message: 'Commande not found' });
-    res.status(200).json(commande);
+    const commandes = await Commande.find({ id_user: req.params.id });
+    if (!commandes || commandes.length === 0) {
+      return res
+        .json([]);
+    }
+    res.status(200).json(commandes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Update commande
 exports.updateCommande = async (req, res) => {

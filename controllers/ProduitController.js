@@ -22,9 +22,10 @@ exports.createProduit = async (req, res) => {
 // Get all produits
 exports.getAllProduits = async (req, res) => {
   try {
-    const produits = await Produit.find().populate("categorie");
+    const produits = await Produit.find();
     res.status(200).json(produits);
   } catch (error) {
+    console.error(error); // Log any errors
     res.status(500).json({ message: error.message });
   }
 };
@@ -32,9 +33,7 @@ exports.getAllProduits = async (req, res) => {
 // Get produit by ID
 exports.getProduitById = async (req, res) => {
   try {
-    const produit = await Produit.findById(req.params.id).populate(
-      "id_categorie"
-    );
+    const produit = await Produit.findById(req.params.id);
     if (!produit) return res.status(404).json({ message: "Produit not found" });
     res.status(200).json(produit);
   } catch (error) {
@@ -48,7 +47,9 @@ exports.updateProduit = async (req, res) => {
 
   // Validate required fields
   if (!nom || !prix || !description || !categorie) {
-    return res.status(400).json({ message: "Tous les champs sauf l'image sont requis." });
+    return res
+      .status(400)
+      .json({ message: "Tous les champs sauf l'image sont requis." });
   }
 
   try {
@@ -64,9 +65,13 @@ exports.updateProduit = async (req, res) => {
       image: image || produit.image, // Keep the old image if new one is not provided
     };
 
-    const updatedProduit = await Produit.findByIdAndUpdate(req.params.id, updatedData, {
-      new: true,
-    });
+    const updatedProduit = await Produit.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      {
+        new: true,
+      }
+    );
 
     res.status(200).json(updatedProduit);
   } catch (error) {
